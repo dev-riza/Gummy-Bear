@@ -291,24 +291,30 @@ export function Home() {
                 className="comfort-score-bubble"
                 style={{ borderColor: SCORE_COLOR[scoreTone(atrium.comfort_score)] }}
               >
-                <span className="comfort-score-label">
-                  {state.personalized ? '🎯 Ваш comfort score' : 'Comfort score'}
-                </span>
-                <span
-                  className="comfort-score-value"
-                  style={{ color: SCORE_COLOR[scoreTone(atrium.comfort_score)] }}
-                >
-                  {atrium.comfort_score}/100
-                </span>
-                <button
-                  type="button"
-                  className="comfort-score-expand"
-                  onClick={() => setShowScoreDetails((v) => !v)}
-                  aria-expanded={showScoreDetails}
-                  aria-label="Выбрать свои идеальные условия"
-                >
-                  {showScoreDetails ? '−' : '+'}
-                </button>
+                <div className="comfort-score-main">
+                  <span className="comfort-score-label">
+                    {state.personalized ? '🎯 Ваш comfort score' : 'Comfort score'}
+                  </span>
+                  <span
+                    className="comfort-score-value"
+                    style={{ color: SCORE_COLOR[scoreTone(atrium.comfort_score)] }}
+                  >
+                    {atrium.comfort_score}/100
+                  </span>
+                  <button
+                    type="button"
+                    className="comfort-score-expand"
+                    onClick={() => setShowScoreDetails((v) => !v)}
+                    aria-expanded={showScoreDetails}
+                    aria-label="Выбрать свои идеальные условия"
+                  >
+                    {showScoreDetails ? '−' : '+'}
+                  </button>
+                </div>
+                <p className="comfort-score-hint">
+                  Comfort score варьируется от ваших предпочтений — нажмите ➕, чтобы настроить его под
+                  себя.
+                </p>
               </div>
 
               {showScoreDetails && (
@@ -364,11 +370,6 @@ export function Home() {
                   </div>
                 </div>
               )}
-
-              <p className="comfort-score-hint">
-                Comfort score варьируется от ваших предпочтений — нажмите ➕, чтобы настроить его под
-                себя.
-              </p>
             </div>
           )}
 
