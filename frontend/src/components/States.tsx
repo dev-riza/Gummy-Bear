@@ -16,7 +16,6 @@ export function ErrorState({
 }) {
   return (
     <div className="state-block" role="alert">
-      <div className="icon">⚠️</div>
       <p>{message}</p>
       {onRetry && (
         <button className="btn" onClick={onRetry}>
@@ -36,7 +35,6 @@ export function EmptyState({
 }) {
   return (
     <div className="state-block">
-      <div className="icon">🗂️</div>
       <p>{message}</p>
       {hint && <p className="helper-text">{hint}</p>}
     </div>

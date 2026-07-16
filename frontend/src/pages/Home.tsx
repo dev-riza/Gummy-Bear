@@ -232,12 +232,12 @@ export function Home() {
         <div className="event-banner">
           {activeEvent.status === 'ongoing' ? (
             <>
-              🎉 Сейчас в атриуме: <strong>{activeEvent.title}</strong> (до{' '}
+              Сейчас в атриуме: <strong>{activeEvent.title}</strong> (до{' '}
               {formatTime(activeEvent.end_time)})
             </>
           ) : (
             <>
-              📅 Скоро в атриуме: <strong>{activeEvent.title}</strong> в{' '}
+              Скоро в атриуме: <strong>{activeEvent.title}</strong> в{' '}
               {formatTime(activeEvent.start_time)}
             </>
           )}
@@ -250,7 +250,7 @@ export function Home() {
         </button>
         {demoMode && (
           <span className="helper-text" style={{ margin: 0 }}>
-            ⚠️ Показаны случайные тестовые данные, не реальные показания датчиков.
+            Показаны случайные тестовые данные, не реальные показания датчиков.
           </span>
         )}
       </div>
@@ -260,7 +260,6 @@ export function Home() {
       {!loading && !error && !state && (
         <div className="card">
           <div className="state-block">
-            <div className="icon">📭</div>
             <p>Пока нет ни одного измерения. Запустите импорт данных на backend.</p>
           </div>
         </div>
@@ -279,8 +278,8 @@ export function Home() {
                 <p className="helper-text">Обновлено {formatDateTime(state.atrium.measured_at)}</p>
               )}
               <p className="helper-text mascot-hero-hint">
-                Наведите курсор на Foku, чтобы он повернулся к вам, или нажмите — он отреагирует на
-                текущие условия в атриуме.
+                Зажмите курсором, чтобы сдвинуть Фоку, или нажмите — он отреагирует на текущие
+                условия в атриуме.
               </p>
             </div>
           </div>
@@ -293,7 +292,7 @@ export function Home() {
               >
                 <div className="comfort-score-main">
                   <span className="comfort-score-label">
-                    {state.personalized ? '🎯 Ваш comfort score' : 'Comfort score'}
+                    {state.personalized ? 'Ваш comfort score' : 'Comfort score'}
                   </span>
                   <span
                     className="comfort-score-value"
@@ -312,8 +311,8 @@ export function Home() {
                   </button>
                 </div>
                 <p className="comfort-score-hint">
-                  Comfort score варьируется от ваших предпочтений — нажмите ➕, чтобы настроить его под
-                  себя.
+                  Comfort score варьируется от ваших предпочтений — нажмите «+», чтобы настроить его
+                  под себя.
                 </p>
               </div>
 
@@ -375,12 +374,12 @@ export function Home() {
 
           <div className="grid grid-4">
             <div className="stat-card accent-temp">
-              <div className="label">🌡️ Атриум</div>
+              <div className="label">Атриум</div>
               <div className="value">{formatTemp(state.atrium?.temperature)}</div>
             </div>
 
             <div className="stat-card accent-sky">
-              <div className="label">🌤️ На улице</div>
+              <div className="label">На улице</div>
               <div className="value">{formatTemp(state.outside?.temperature)}</div>
               {state.indoor_outdoor_diff !== null && (
                 <div className="sub">
@@ -391,14 +390,14 @@ export function Home() {
             </div>
 
             <div className="stat-card accent-light">
-              <div className="label">💡 Освещение</div>
+              <div className="label">Освещение</div>
               <div className="value" style={{ fontSize: '1.15rem' }}>
                 {state.atrium?.brightness_status ?? '—'}
               </div>
             </div>
 
             <div className="stat-card accent-sound">
-              <div className="label">🔊 Шум</div>
+              <div className="label">Шум</div>
               <div className="value" style={{ fontSize: '1.15rem' }}>
                 {state.atrium?.noise_status ?? '—'}
               </div>

@@ -30,7 +30,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div className="toast-stack" role="status" aria-live="polite">
         {toasts.map((t) => (
           <div key={t.id} className={`toast toast-${t.variant}`}>
-            <span>{t.variant === 'success' ? '✅' : '⚠️'}</span>
             <span>{t.message}</span>
           </div>
         ))}

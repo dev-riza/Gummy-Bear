@@ -11,10 +11,10 @@ const MOOD_LABEL: Record<FokuMood, string> = {
 }
 
 const MOOD_LINE: Record<FokuMood, string> = {
-  excellent: 'Кайф! В атриуме идеальная атмосфера для фокуса. ✨👑',
+  excellent: 'Кайф! В атриуме идеальная атмосфера для фокуса.',
   normal: 'Нормально, работать можно, но не идеально.',
-  poor: 'Хмм, условия не идеальны. Давай выберем другое место? 🌡️',
-  friend: 'Многовато шума для соло-фокуса — возьми с собой друга! 🙌',
+  poor: 'Хмм, условия не идеальны. Давай выберем другое место?',
+  friend: 'Многовато шума для соло-фокуса — возьми с собой друга!',
 }
 
 const MOOD_IMAGE: Record<FokuMood, string> = {
@@ -24,7 +24,7 @@ const MOOD_IMAGE: Record<FokuMood, string> = {
   friend: '/foku-friend.png',
 }
 
-const REPEAT_LINE = 'Эй, я же золотой, а не резиновый! Давай работать! 🤫'
+const REPEAT_LINE = 'Эй, я же золотой, а не резиновый! Давай работать!'
 const REPEAT_WINDOW_MS = 2200
 const NOISY_LEVELS = new Set(['Noisy', 'Very noisy'])
 const DRAG_THRESHOLD = 6

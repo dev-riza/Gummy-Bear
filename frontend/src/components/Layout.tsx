@@ -36,7 +36,7 @@ export function Layout() {
           aria-label={theme === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему'}
           title={theme === 'light' ? 'Тёмная тема' : 'Светлая тема'}
         >
-          {theme === 'light' ? '🌙' : '☀️'}
+          {theme === 'light' ? 'Тёмная' : 'Светлая'}
         </button>
       </header>
       <main className="page">
