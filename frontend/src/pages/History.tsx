@@ -320,8 +320,10 @@ export function History() {
                       <td>{r.location === 'atrium' ? 'Атриум' : 'Улица'}</td>
                       <td>
                         {r.temperature.toFixed(1)}°C{' '}
-                        {r.temperature_status && (
+                        {r.temperature_status ? (
                           <Badge tone={tempTone(r.temperature_status)}>{r.temperature_status}</Badge>
+                        ) : (
+                          '—'
                         )}
                       </td>
                       <td>{r.brightness_status ?? '—'}</td>
