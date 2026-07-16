@@ -1,6 +1,9 @@
 import type {
   CurrentState,
+  EventOut,
   PaginatedReadings,
+  PreferenceIn,
+  PreferenceOut,
   ReadingWithStatus,
   ReadingsFilters,
   ReportCategory,
@@ -50,7 +53,7 @@ function buildQuery(params: object): string {
 }
 
 export const api = {
-  getCurrent: () => request<CurrentState>('/api/current'),
+  getCurrent: (visitorId?: string) => request<CurrentState>(`/api/current${buildQuery({ visitor_id: visitorId })}`),
 
   getReadings: (filters: ReadingsFilters) =>
     request<PaginatedReadings>(`/api/readings${buildQuery(filters)}`),
@@ -76,4 +79,15 @@ export const api = {
   ) => request<ReportOut>(`/api/reports/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
 
   deleteReport: (id: number) => request<void>(`/api/reports/${id}`, { method: 'DELETE' }),
+
+  getActiveEvent: () => request<EventOut | null>('/api/events/active'),
+
+  getPreference: (visitorId: string) =>
+    request<PreferenceOut>(`/api/preferences/${encodeURIComponent(visitorId)}`),
+
+  savePreference: (visitorId: string, payload: PreferenceIn) =>
+    request<PreferenceOut>(`/api/preferences/${encodeURIComponent(visitorId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),
 }

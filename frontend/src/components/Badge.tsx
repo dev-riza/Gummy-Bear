@@ -1,11 +1,10 @@
 type BadgeTone = 'good' | 'warn' | 'bad' | 'neutral'
 
 const TEMP_TONE: Record<string, BadgeTone> = {
-  Прохладно: 'neutral',
+  Холодно: 'warn',
   Комфортно: 'good',
   Тепло: 'warn',
-  Жарко: 'warn',
-  'Очень жарко': 'bad',
+  Жарко: 'bad',
 }
 
 const NOISE_TONE: Record<string, BadgeTone> = {

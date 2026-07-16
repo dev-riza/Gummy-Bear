@@ -8,6 +8,8 @@ ReportCategory = Literal[
     "too_hot", "too_noisy", "too_bright", "too_dark", "comfortable", "other"
 ]
 ReportStatus = Literal["open", "resolved"]
+NoiseLevel = Literal["Quiet", "Mild noise", "Noisy", "Very noisy"]
+BrightnessLevel = Literal["Dark", "Dim", "Normal brightness", "Bright", "Very bright"]
 
 
 class ReadingOut(BaseModel):
@@ -34,6 +36,7 @@ class CurrentState(BaseModel):
     indoor_outdoor_diff: Optional[float] = None
     overall_status: str
     recommendation: str
+    personalized: bool = False
 
 
 class DailyStat(BaseModel):
@@ -85,3 +88,29 @@ class PaginatedReadings(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class EventOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    title: str
+    start_time: datetime
+    end_time: datetime
+    status: Literal["ongoing", "upcoming"]
+
+
+class PreferenceIn(BaseModel):
+    preferred_temp: float = Field(ge=0, le=45)
+    preferred_noise: NoiseLevel
+    preferred_brightness: BrightnessLevel
+
+
+class PreferenceOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    visitor_id: str
+    preferred_temp: float
+    preferred_noise: str
+    preferred_brightness: str
+    updated_at: datetime

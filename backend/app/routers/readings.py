@@ -10,14 +10,28 @@ from sqlalchemy.orm import Session
 
 from .. import analytics
 from ..database import get_db
-from ..models import Reading
+from ..models import Preference, Reading
 from ..schemas import CurrentState, PaginatedReadings, ReadingOut, ReadingWithStatus
 
 router = APIRouter(prefix="/api", tags=["readings"])
 
 
-def _to_status(reading: Reading) -> ReadingWithStatus:
+def _to_status(reading: Reading, preference: Optional[Preference] = None) -> ReadingWithStatus:
     is_atrium = reading.location == "atrium"
+
+    score = None
+    if is_atrium and preference is not None:
+        score = analytics.personalized_comfort_score(
+            reading.temperature,
+            reading.noise,
+            reading.brightness,
+            preference.preferred_temp,
+            preference.preferred_noise,
+            preference.preferred_brightness,
+        )
+    elif is_atrium:
+        score = analytics.comfort_score(reading.temperature, reading.noise, reading.brightness)
+
     return ReadingWithStatus(
         id=reading.id,
         measured_at=reading.measured_at,
@@ -28,11 +42,7 @@ def _to_status(reading: Reading) -> ReadingWithStatus:
         temperature_status=analytics.temperature_status(reading.temperature) if is_atrium else None,
         noise_status=analytics.noise_status(reading.noise) if is_atrium else None,
         brightness_status=analytics.brightness_status(reading.brightness) if is_atrium else None,
-        comfort_score=(
-            analytics.comfort_score(reading.temperature, reading.noise, reading.brightness)
-            if is_atrium
-            else None
-        ),
+        comfort_score=score,
     )
 
 
@@ -131,7 +141,7 @@ def get_reading(reading_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/current", response_model=CurrentState)
-def get_current_state(db: Session = Depends(get_db)):
+def get_current_state(visitor_id: Optional[str] = None, db: Session = Depends(get_db)):
     latest_atrium = (
         db.query(Reading).filter(Reading.location == "atrium").order_by(desc(Reading.measured_at)).first()
     )
@@ -141,6 +151,10 @@ def get_current_state(db: Session = Depends(get_db)):
 
     if latest_atrium is None and latest_outside is None:
         raise HTTPException(status_code=404, detail="No readings available yet")
+
+    preference = None
+    if visitor_id:
+        preference = db.query(Preference).filter(Preference.visitor_id == visitor_id).first()
 
     diff = None
     if latest_atrium is not None and latest_outside is not None:
@@ -154,9 +168,10 @@ def get_current_state(db: Session = Depends(get_db)):
         recommendation = "Недостаточно данных"
 
     return CurrentState(
-        atrium=_to_status(latest_atrium) if latest_atrium else None,
+        atrium=_to_status(latest_atrium, preference) if latest_atrium else None,
         outside=ReadingOut.model_validate(latest_outside) if latest_outside else None,
         indoor_outdoor_diff=diff,
         overall_status=overall_status,
         recommendation=recommendation,
+        personalized=preference is not None,
     )

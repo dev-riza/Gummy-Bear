@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { api } from '../api/client'
 import type { PaginatedReadings, ReadingsFilters } from '../api/types'
 import { Badge, noiseTone, tempTone } from '../components/Badge'
@@ -10,6 +10,21 @@ const PAGE_SIZE = 15
 const NOISE_OPTIONS = ['Quiet', 'Mild noise', 'Noisy', 'Very noisy']
 const BRIGHTNESS_OPTIONS = ['Dark', 'Dim', 'Normal brightness', 'Bright', 'Very bright']
 
+const MONTH_NAMES: Record<string, string> = {
+  '01': 'Январь',
+  '02': 'Февраль',
+  '03': 'Март',
+  '04': 'Апрель',
+  '05': 'Май',
+  '06': 'Июнь',
+  '07': 'Июль',
+  '08': 'Август',
+  '09': 'Сентябрь',
+  '10': 'Октябрь',
+  '11': 'Ноябрь',
+  '12': 'Декабрь',
+}
+
 export function History() {
   const [filters, setFilters] = useState<ReadingsFilters>({
     sort_by: 'measured_at',
@@ -20,6 +35,62 @@ export function History() {
   const [data, setData] = useState<PaginatedReadings | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Date filter is three dropdowns (day/month/year) constrained to dates that
+  // actually exist in the data, rather than a free date picker where the
+  // user could pick a date with no readings at all.
+  const [availableDates, setAvailableDates] = useState<string[]>([])
+  const [dateYear, setDateYear] = useState('')
+  const [dateMonth, setDateMonth] = useState('')
+  const [dateDay, setDateDay] = useState('')
+
+  useEffect(() => {
+    api
+      .getAvailableDates()
+      .then(setAvailableDates)
+      .catch(() => setAvailableDates([]))
+  }, [])
+
+  const dateParts = useMemo(
+    () =>
+      availableDates.map((d) => {
+        const [year, month, day] = d.split('-')
+        return { year, month, day }
+      }),
+    [availableDates],
+  )
+
+  const years = useMemo(
+    () => Array.from(new Set(dateParts.map((p) => p.year))).sort(),
+    [dateParts],
+  )
+  const months = useMemo(
+    () =>
+      Array.from(new Set(dateParts.filter((p) => !dateYear || p.year === dateYear).map((p) => p.month))).sort(),
+    [dateParts, dateYear],
+  )
+  const days = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          dateParts
+            .filter((p) => (!dateYear || p.year === dateYear) && (!dateMonth || p.month === dateMonth))
+            .map((p) => p.day),
+        ),
+      ).sort(),
+    [dateParts, dateYear, dateMonth],
+  )
+
+  // Auto-fill year/month when there's only one possible value, so picking a
+  // day alone is enough — but this still supports multiple months/years if
+  // the dataset grows, since the dropdowns are populated dynamically.
+  useEffect(() => {
+    if (years.length === 1 && !dateYear) setDateYear(years[0])
+  }, [years, dateYear])
+
+  useEffect(() => {
+    if (months.length === 1 && !dateMonth) setDateMonth(months[0])
+  }, [months, dateMonth])
 
   const load = (f: ReadingsFilters) => {
     setLoading(true)
@@ -37,6 +108,32 @@ export function History() {
     setFilters((prev) => ({ ...prev, ...patch, page: 1 }))
   }
 
+  const applyDateParts = (year: string, month: string, day: string) => {
+    if (year && month && day) {
+      updateFilter({ date: `${year}-${month}-${day}` })
+    } else {
+      updateFilter({ date: undefined })
+    }
+  }
+
+  const handleYearChange = (year: string) => {
+    setDateYear(year)
+    setDateMonth('')
+    setDateDay('')
+    applyDateParts(year, '', '')
+  }
+
+  const handleMonthChange = (month: string) => {
+    setDateMonth(month)
+    setDateDay('')
+    applyDateParts(dateYear, month, '')
+  }
+
+  const handleDayChange = (day: string) => {
+    setDateDay(day)
+    applyDateParts(dateYear, dateMonth, day)
+  }
+
   const toggleSort = (column: 'measured_at' | 'temperature') => {
     setFilters((prev) => ({
       ...prev,
@@ -46,8 +143,12 @@ export function History() {
     }))
   }
 
-  const resetFilters = () =>
+  const resetFilters = () => {
+    setDateYear('')
+    setDateMonth('')
+    setDateDay('')
     setFilters({ sort_by: 'measured_at', order: 'desc', page: 1, page_size: PAGE_SIZE })
+  }
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.page_size)) : 1
   const sortIndicator = (column: string) =>
@@ -63,12 +164,43 @@ export function History() {
       <div className="card">
         <div className="filters-bar">
           <label>
-            Дата
-            <input
-              type="date"
-              value={filters.date ?? ''}
-              onChange={(e) => updateFilter({ date: e.target.value || undefined })}
-            />
+            День
+            <select value={dateDay} onChange={(e) => handleDayChange(e.target.value)} disabled={days.length === 0}>
+              <option value="">Все</option>
+              {days.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Месяц
+            <select
+              value={dateMonth}
+              onChange={(e) => handleMonthChange(e.target.value)}
+              disabled={months.length === 0}
+            >
+              <option value="">Все</option>
+              {months.map((m) => (
+                <option key={m} value={m}>
+                  {MONTH_NAMES[m] ?? m}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Год
+            <select value={dateYear} onChange={(e) => handleYearChange(e.target.value)} disabled={years.length === 0}>
+              <option value="">Все</option>
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>

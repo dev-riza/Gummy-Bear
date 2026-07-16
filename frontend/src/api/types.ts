@@ -32,6 +32,7 @@ export interface CurrentState {
   indoor_outdoor_diff: number | null
   overall_status: string
   recommendation: string
+  personalized: boolean
 }
 
 export interface DailyStat {
@@ -70,6 +71,25 @@ export interface ReportOut {
   category: ReportCategory
   comment: string | null
   status: ReportStatus
+}
+
+export interface EventOut {
+  id: number
+  title: string
+  start_time: string
+  end_time: string
+  status: 'ongoing' | 'upcoming'
+}
+
+export interface PreferenceIn {
+  preferred_temp: number
+  preferred_noise: string
+  preferred_brightness: string
+}
+
+export interface PreferenceOut extends PreferenceIn {
+  visitor_id: string
+  updated_at: string
 }
 
 export interface ReadingsFilters {

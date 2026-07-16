@@ -1,72 +1,107 @@
+/* Premium palette: gold accents, floating on a crisp white/near-black page.
+   In light mode, cards are a light grey with dark text (a genuinely bright
+   look); in dark mode, cards stay a deep near-black with light cream text
+   (the original premium look). --text/--text-muted alias to --ink/--muted-ink
+   so they automatically track whichever the current theme's page-text color
+   is — since in both themes, card and page now sit in the same light/dark
+   family, there's no longer a need for the two to diverge. */
 :root {
-  --gold: #c9982a;
-  --gold-strong: #a97b13;
-  --gold-soft: #f3dfa4;
-  --gold-wash: #fbf3dd;
-  --bg: #fffdf7;
-  --surface: #ffffff;
-  --surface-alt: #fff9ec;
-  --text: #2a2312;
-  --text-muted: #6b6046;
-  --border: #ecdfb6;
-  --border-strong: #d9c481;
-  --shadow: 0 1px 3px rgba(120, 92, 15, 0.08), 0 6px 20px rgba(120, 92, 15, 0.06);
+  --gold: #d4af37;
+  --gold-strong: #b8901f;
+  --gold-bright: #ffdf00;
+  --gold-glow: rgba(212, 175, 55, 0.16);
+  --page-wash: rgba(212, 175, 55, 0.07);
 
-  --good: #2f7d4f;
-  --good-bg: #e7f4ec;
-  --warn: #b8790f;
-  --warn-bg: #fbeed4;
-  --bad: #b53c3c;
-  --bad-bg: #fbe6e6;
+  --bg: #f5f5f6;
+  --surface: #fdf6dc;
+  --surface-alt: #fbedbb;
+
+  --ink: #15130f;
+  --muted-ink: #6b6660;
+  --text: var(--ink);
+  --text-muted: var(--muted-ink);
+
+  /* The top bar sits directly on the page, not on a card, so it gets its own
+     pair of tokens: white in light mode (matching the page), dark in dark
+     mode (matching the cards) — unlike .card, which is always dark. */
+  --topbar-bg: #ffffff;
+  --topbar-text: var(--ink);
+  --topbar-text-muted: var(--muted-ink);
+
+  /* The Foku hero card gets a warm white gradient in light mode instead of
+     the neutral grey every other card uses; dark mode keeps it matching the
+     rest of the dark cards. */
+  --hero-bg-from: #fffaf0;
+  --hero-bg-to: #fdf2dc;
+
+  /* Darker/more opaque than the dark-mode borders below: translucent gold at
+     that low alpha nearly disappears against a light grey card, so this
+     leans on --gold-strong with higher alpha for the same visible hairline
+     effect. */
+  --border: rgba(184, 144, 31, 0.35);
+  --border-strong: rgba(184, 144, 31, 0.55);
+  --shadow: 0 16px 40px rgba(20, 16, 5, 0.18), 0 4px 14px rgba(20, 16, 5, 0.12);
+
+  --good: #4ade80;
+  --good-bg: rgba(74, 222, 128, 0.16);
+  --warn: #fbbf24;
+  --warn-bg: rgba(251, 191, 36, 0.16);
+  --bad: #f87171;
+  --bad-bg: rgba(248, 113, 113, 0.16);
+
+  /* Secondary category colors — gold stays the dominant/brand color (top bar,
+     buttons, active nav, borders); these are only used as small accents
+     (stat-card stripes/icons) so the palette reads as colorful without
+     competing with gold for attention. */
+  --accent-temp: #f97316;
+  --accent-temp-bg: rgba(249, 115, 22, 0.14);
+  --accent-sky: #38bdf8;
+  --accent-sky-bg: rgba(56, 189, 248, 0.14);
+  --accent-light: #eab308;
+  --accent-light-bg: rgba(234, 179, 8, 0.14);
+  --accent-sound: #a78bfa;
+  --accent-sound-bg: rgba(167, 139, 250, 0.14);
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
 
   color-scheme: light;
 }
 
 :root[data-theme='dark'] {
-  --gold: #e0b13d;
-  --gold-strong: #f0c35c;
-  --gold-soft: #4a3c17;
-  --gold-wash: #2a2412;
-  --bg: #17150d;
-  --surface: #211d12;
-  --surface-alt: #2a2416;
-  --text: #f5efdc;
-  --text-muted: #b8ac86;
-  --border: #3a331d;
-  --border-strong: #4d4426;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
-
-  --good: #6fce93;
-  --good-bg: #1c3327;
-  --warn: #ecb84f;
-  --warn-bg: #3a2d10;
-  --bad: #e37b7b;
-  --bad-bg: #3a1e1e;
+  --bg: #0a0a0a;
+  --surface: #161616;
+  --surface-alt: #202020;
+  --ink: #f0ede4;
+  --muted-ink: #a39d90;
+  --topbar-bg: var(--surface);
+  --topbar-text: var(--text);
+  --topbar-text-muted: var(--text-muted);
+  --hero-bg-from: var(--surface-alt);
+  --hero-bg-to: var(--surface);
+  --border: rgba(212, 175, 55, 0.3);
+  --border-strong: rgba(212, 175, 55, 0.5);
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 4px 14px rgba(0, 0, 0, 0.4);
 
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --gold: #e0b13d;
-    --gold-strong: #f0c35c;
-    --gold-soft: #4a3c17;
-    --gold-wash: #2a2412;
-    --bg: #17150d;
-    --surface: #211d12;
-    --surface-alt: #2a2416;
-    --text: #f5efdc;
-    --text-muted: #b8ac86;
-    --border: #3a331d;
-    --border-strong: #4d4426;
-    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
-
-    --good: #6fce93;
-    --good-bg: #1c3327;
-    --warn: #ecb84f;
-    --warn-bg: #3a2d10;
-    --bad: #e37b7b;
-    --bad-bg: #3a1e1e;
+    --bg: #0a0a0a;
+    --surface: #161616;
+    --surface-alt: #202020;
+    --ink: #f0ede4;
+    --muted-ink: #a39d90;
+    --topbar-bg: var(--surface);
+    --topbar-text: var(--text);
+    --topbar-text-muted: var(--text-muted);
+    --hero-bg-from: var(--surface-alt);
+    --hero-bg-to: var(--surface);
+    --border: rgba(212, 175, 55, 0.3);
+    --border-strong: rgba(212, 175, 55, 0.5);
+    --shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 4px 14px rgba(0, 0, 0, 0.4);
 
     color-scheme: dark;
   }
@@ -84,8 +119,14 @@ body,
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  /* Gold stays the widest/strongest wash (dominant color); faint warm and
+     cool glows at the sides add colorful variety without competing with it. */
+  background:
+    radial-gradient(ellipse 600px 380px at 8% 0%, var(--accent-temp-bg), transparent 60%),
+    radial-gradient(ellipse 600px 380px at 92% 0%, var(--accent-sky-bg), transparent 60%),
+    radial-gradient(ellipse 950px 520px at 50% -10%, var(--page-wash), transparent 65%),
+    var(--bg);
+  color: var(--ink);
   font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -110,7 +151,8 @@ button {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.9rem 1.5rem;
-  background: var(--surface);
+  background: var(--topbar-bg);
+  color: var(--topbar-text);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -127,16 +169,10 @@ button {
 }
 
 .brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-strong));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  color: #2a2312;
-  box-shadow: var(--shadow);
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .nav-links {
@@ -151,18 +187,18 @@ button {
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--topbar-text-muted);
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .nav-link:hover {
-  background: var(--gold-wash);
-  color: var(--text);
+  background: var(--gold-glow);
+  color: var(--topbar-text);
 }
 
 .nav-link.active {
   background: var(--gold);
-  color: #2a2312;
+  color: #161616;
 }
 
 .theme-toggle {
@@ -188,6 +224,27 @@ main.page {
   padding: 1.5rem 1.25rem 3rem;
 }
 
+.event-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  text-align: center;
+  min-height: 92px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  /* Dark scrim on top of the atrium photo so white text stays readable
+     regardless of how bright the underlying photo is at that spot. */
+  background: linear-gradient(135deg, rgba(15, 12, 4, 0.68), rgba(15, 12, 4, 0.5)),
+    url('/atrium-photo.jpg') center/cover;
+  color: #fff9ec;
+  font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow);
+}
+
 .page-header {
   margin-bottom: 1.25rem;
 }
@@ -199,14 +256,15 @@ main.page {
 
 .page-header p {
   margin: 0;
-  color: var(--text-muted);
+  color: var(--muted-ink);
 }
 
 .card {
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  padding: 1.35rem 1.5rem;
   box-shadow: var(--shadow);
 }
 
@@ -228,11 +286,36 @@ main.page {
 }
 
 .stat-card {
+  /* min-width: 0 overrides the grid item's default min-width: auto, which
+     otherwise locks the track to its content's unwrapped size and forces
+     overflow into neighboring cards as the viewport narrows. */
+  min-width: 0;
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-top: 3px solid var(--border);
+  border-radius: var(--radius-md);
   padding: 1rem 1.1rem;
   box-shadow: var(--shadow);
+}
+
+/* Category accents — small colorful touches on otherwise-neutral cards.
+   Gold remains the dominant color everywhere else (top bar, buttons, nav,
+   borders); these are the app's only non-gold color statements. */
+.stat-card.accent-temp {
+  border-top-color: var(--accent-temp);
+}
+
+.stat-card.accent-sky {
+  border-top-color: var(--accent-sky);
+}
+
+.stat-card.accent-light {
+  border-top-color: var(--accent-light);
+}
+
+.stat-card.accent-sound {
+  border-top-color: var(--accent-sound);
 }
 
 .stat-card .label {
@@ -246,12 +329,195 @@ main.page {
 .stat-card .value {
   font-size: 1.7rem;
   font-weight: 700;
+  /* A single long word (e.g. "Приглушённый") has no space to wrap at, so
+     without this it can overflow past the card edge at narrow widths even
+     though min-width: 0 lets the card itself shrink. */
+  overflow-wrap: break-word;
 }
 
 .stat-card .sub {
   margin-top: 0.25rem;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.mascot-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(180deg, var(--hero-bg-from), var(--hero-bg-to));
+  text-align: center;
+  padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.mascot-hero-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mascot-hero-recommendation {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.mascot-hero-hint {
+  max-width: 380px;
+  margin-top: 0.15rem;
+}
+
+.comfort-score-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0 1.25rem;
+}
+
+.comfort-score-bubble {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 0.6rem 2.75rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.comfort-score-label {
+  font-size: 0.85rem;
+  color: var(--muted-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  overflow-wrap: break-word;
+}
+
+.comfort-score-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  overflow-wrap: break-word;
+}
+
+.comfort-score-expand {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.comfort-score-expand:hover {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+}
+
+.comfort-score-details {
+  width: 100%;
+  max-width: 560px;
+  margin-top: 0.75rem;
+  padding: 0.9rem 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.comfort-score-details p {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+.comfort-score-details ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.preference-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.preference-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.preference-row input[type='range'] {
+  width: 100%;
+  accent-color: var(--gold);
+}
+
+.preference-row select {
+  width: 100%;
+}
+
+.preference-result p {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+}
+
+.preference-result ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.preference-result li {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.preference-result li.match {
+  color: var(--good);
+}
+
+.preference-result li.mismatch {
+  color: var(--warn);
+}
+
+@media (max-width: 400px) {
+  .comfort-score-bubble {
+    padding: 0.55rem 1.5rem;
+    gap: 0.5rem;
+  }
+
+  .comfort-score-value {
+    font-size: 1.6rem;
+  }
 }
 
 .badge {
@@ -262,7 +528,9 @@ main.page {
   border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 600;
-  white-space: nowrap;
+  line-height: 1.3;
+  text-align: center;
+  overflow-wrap: break-word;
 }
 
 .badge-good {
@@ -281,15 +549,15 @@ main.page {
 }
 
 .badge-neutral {
-  background: var(--gold-wash);
-  color: var(--gold-strong);
+  background: var(--gold-glow);
+  color: var(--gold);
 }
 
 .btn {
   border: 1px solid var(--border-strong);
   background: var(--surface-alt);
   color: var(--text);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 0.55rem 1rem;
   font-weight: 600;
   font-size: 0.9rem;
@@ -298,7 +566,7 @@ main.page {
 }
 
 .btn:hover {
-  background: var(--gold-wash);
+  background: var(--gold-glow);
 }
 
 .btn:active {
@@ -306,9 +574,9 @@ main.page {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--gold), var(--gold-strong));
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold-strong));
   border-color: var(--gold-strong);
-  color: #241d0d;
+  color: #161616;
 }
 
 .btn-primary:hover {
@@ -338,7 +606,7 @@ textarea {
   font-family: inherit;
   font-size: 0.9rem;
   padding: 0.5rem 0.65rem;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--surface);
   color: var(--text);
@@ -404,12 +672,12 @@ tbody td {
 }
 
 tbody tr:hover {
-  background: var(--gold-wash);
+  background: var(--gold-glow);
 }
 
 .table-scroll {
   overflow-x: auto;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
 }
 
@@ -422,6 +690,8 @@ tbody tr:hover {
   padding-left: 1rem;
 }
 
+/* Self-contained dark surface so it reads correctly whether it's placed
+   directly on the page background or nested inside another .card. */
 .state-block {
   display: flex;
   flex-direction: column;
@@ -430,7 +700,10 @@ tbody tr:hover {
   gap: 0.6rem;
   padding: 2.5rem 1rem;
   text-align: center;
+  background: var(--surface-alt);
   color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
 }
 
 .state-block .icon {
@@ -441,7 +714,7 @@ tbody tr:hover {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 3px solid var(--border);
+  border: 3px solid rgba(255, 255, 255, 0.15);
   border-top-color: var(--gold);
   animation: spin 0.8s linear infinite;
 }
@@ -468,6 +741,7 @@ tbody tr:hover {
   padding: 0.75rem 1rem;
   border-radius: 10px;
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow);
   font-size: 0.88rem;
@@ -509,7 +783,7 @@ tbody tr:hover {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(20, 16, 5, 0.35);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -519,7 +793,8 @@ tbody tr:hover {
 
 .modal {
   background: var(--surface);
-  border-radius: 14px;
+  color: var(--text);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow);
   padding: 1.25rem;
@@ -603,7 +878,7 @@ tbody tr:hover {
 .day-chip.active {
   background: var(--gold);
   border-color: var(--gold-strong);
-  color: #241d0d;
+  color: #161616;
 }
 
 .insights-list {
@@ -614,9 +889,28 @@ tbody tr:hover {
 
 .insight-item {
   border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
   background: var(--surface-alt);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 0.7rem 0.85rem;
+}
+
+/* Cycling colored accents so the insights list reads as varied rather than
+   a uniform grey block; gold remains one of the five, not replaced. */
+.insight-item:nth-child(5n + 1) {
+  border-left-color: var(--gold);
+}
+.insight-item:nth-child(5n + 2) {
+  border-left-color: var(--accent-temp);
+}
+.insight-item:nth-child(5n + 3) {
+  border-left-color: var(--accent-sky);
+}
+.insight-item:nth-child(5n + 4) {
+  border-left-color: var(--accent-light);
+}
+.insight-item:nth-child(5n + 5) {
+  border-left-color: var(--accent-sound);
 }
 
 .insight-item .label {

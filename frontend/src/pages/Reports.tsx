@@ -28,10 +28,10 @@ function ReportForm({ onCreated }: { onCreated: () => void }) {
     try {
       await api.createReport({ category, comment: comment.trim() || undefined })
       setComment('')
-      showToast('Отчёт отправлен, спасибо!')
+      showToast('Отзыв отправлен, спасибо!')
       onCreated()
     } catch {
-      showToast('Не удалось отправить отчёт.', 'error')
+      showToast('Не удалось отправить отзыв.', 'error')
     } finally {
       setSubmitting(false)
     }
@@ -60,7 +60,7 @@ function ReportForm({ onCreated }: { onCreated: () => void }) {
         />
       </label>
       <button className="btn btn-primary" type="submit" disabled={submitting}>
-        {submitting ? 'Отправляем…' : 'Оставить отчёт'}
+        {submitting ? 'Отправляем…' : 'Оставить отзыв'}
       </button>
     </form>
   )
@@ -83,7 +83,7 @@ export function Reports() {
     api
       .listReports(statusFilter || undefined)
       .then(setReports)
-      .catch(() => setError('Не удалось загрузить отчёты.'))
+      .catch(() => setError('Не удалось загрузить отзывы.'))
       .finally(() => setLoading(false))
   }
 
@@ -98,18 +98,18 @@ export function Reports() {
   const saveEdit = async (id: number) => {
     try {
       await api.updateReport(id, { category: editCategory, comment: editComment.trim() || undefined })
-      showToast('Отчёт обновлён.')
+      showToast('Отзыв обновлён.')
       setEditingId(null)
       load()
     } catch {
-      showToast('Не удалось обновить отчёт.', 'error')
+      showToast('Не удалось обновить отзыв.', 'error')
     }
   }
 
   const toggleStatus = async (report: ReportOut) => {
     try {
       await api.updateReport(report.id, { status: report.status === 'open' ? 'resolved' : 'open' })
-      showToast(report.status === 'open' ? 'Отчёт отмечен решённым.' : 'Отчёт возвращён в открытые.')
+      showToast(report.status === 'open' ? 'Отзыв отмечен решённым.' : 'Отзыв возвращён в открытые.')
       load()
     } catch {
       showToast('Не удалось изменить статус.', 'error')
@@ -120,10 +120,10 @@ export function Reports() {
     if (pendingDeleteId === null) return
     try {
       await api.deleteReport(pendingDeleteId)
-      showToast('Отчёт удалён.')
+      showToast('Отзыв удалён.')
       load()
     } catch {
-      showToast('Не удалось удалить отчёт.', 'error')
+      showToast('Не удалось удалить отзыв.', 'error')
     } finally {
       setPendingDeleteId(null)
     }
@@ -132,12 +132,12 @@ export function Reports() {
   return (
     <>
       <div className="page-header">
-        <h1>Отчёты пользователей</h1>
+        <h1>Отзывы пользователей</h1>
         <p>Сообщите о текущих условиях в атриуме или посмотрите, что сообщили другие.</p>
       </div>
 
       <div className="card">
-        <div className="section-title">Новый отчёт</div>
+        <div className="section-title">Новый отзыв</div>
         <ReportForm onCreated={load} />
       </div>
 
@@ -152,9 +152,9 @@ export function Reports() {
           }}
         >
           <div className="section-title" style={{ marginBottom: 0 }}>
-            Все отчёты
+            Все отзывы
           </div>
-          <label style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
+          <label style={{ flexDirection: 'row', alignItems: 'center', gap: '1.5rem' }}>
             Статус
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ReportStatus | '')}>
               <option value="">Все</option>
@@ -167,7 +167,7 @@ export function Reports() {
         {loading && <LoadingState />}
         {!loading && error && <ErrorState message={error} onRetry={load} />}
         {!loading && !error && reports.length === 0 && (
-          <EmptyState message="Отчётов пока нет." hint="Оставьте первый отчёт выше." />
+          <EmptyState message="Отзывов пока нет." hint="Оставьте первый отзыв выше." />
         )}
 
         {!loading &&
@@ -236,7 +236,7 @@ export function Reports() {
 
       {pendingDeleteId !== null && (
         <ConfirmDialog
-          title="Удалить отчёт?"
+          title="Удалить отзыв?"
           message="Это действие нельзя отменить."
           onConfirm={confirmDelete}
           onCancel={() => setPendingDeleteId(null)}

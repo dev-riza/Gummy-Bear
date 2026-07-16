@@ -3,9 +3,9 @@ import { useTheme } from '../context/ThemeContext'
 
 const NAV_ITEMS = [
   { to: '/', label: 'Главная', end: true },
-  { to: '/history', label: 'История' },
+  { to: '/reports', label: 'Отзывы' },
   { to: '/analytics', label: 'Аналитика' },
-  { to: '/reports', label: 'Отчёты' },
+  { to: '/history', label: 'История' },
 ]
 
 export function Layout() {
@@ -15,9 +15,7 @@ export function Layout() {
     <div className="app-shell">
       <header className="top-bar">
         <div className="brand">
-          <span className="brand-mark" aria-hidden="true">
-            ☀️
-          </span>
+          <img src="/nu-shield.png" alt="Nazarbayev University" className="brand-mark" />
           AtriumSense
         </div>
         <nav className="nav-links" aria-label="Основная навигация">

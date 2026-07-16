@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import Base, SessionLocal, engine
-from .routers import readings, reports, summary
-from .seed import seed_if_empty
+from .routers import events, preferences, readings, reports, summary
+from .seed import seed_events_if_empty, seed_if_empty
 
 app = FastAPI(title="AtriumSense API", version="1.0.0")
 
@@ -26,6 +26,7 @@ def on_startup():
     db = SessionLocal()
     try:
         seed_if_empty(db)
+        seed_events_if_empty(db)
     finally:
         db.close()
 
@@ -33,6 +34,8 @@ def on_startup():
 app.include_router(readings.router)
 app.include_router(summary.router)
 app.include_router(reports.router)
+app.include_router(events.router)
+app.include_router(preferences.router)
 
 
 @app.get("/api/health")
