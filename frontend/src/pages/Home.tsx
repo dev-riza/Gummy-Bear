@@ -55,43 +55,6 @@ const NOISE_RU: Record<string, string> = {
 // utils/visitor.ts). Once saved, the backend uses it to personalize
 // comfort_score (and therefore Foku's mood) for that visitor specifically.
 
-interface PreferenceCheck {
-  label: string
-  match: boolean
-  note: string
-}
-
-function comparePreferences(
-  atrium: ReadingWithStatus,
-  preferredTemp: number,
-  preferredNoise: string,
-  preferredBrightness: string,
-): PreferenceCheck[] {
-  const tempDiff = atrium.temperature - preferredTemp
-  const tempMatch = Math.abs(tempDiff) <= 2
-  const tempNote = tempMatch
-    ? 'как вы любите'
-    : tempDiff > 0
-      ? `на ${tempDiff.toFixed(1)}°C теплее, чем вы предпочитаете`
-      : `на ${Math.abs(tempDiff).toFixed(1)}°C холоднее, чем вы предпочитаете`
-
-  const noiseIdx = NOISE_LEVELS.indexOf(atrium.noise ?? 'Mild noise')
-  const preferredNoiseIdx = NOISE_LEVELS.indexOf(preferredNoise)
-  const noiseMatch = noiseIdx <= preferredNoiseIdx
-  const noiseNote = noiseMatch ? 'тише или так же, как вы любите' : 'шумнее, чем вы предпочитаете'
-
-  const brightnessIdx = BRIGHTNESS_LEVELS.indexOf(atrium.brightness ?? 'Normal brightness')
-  const preferredBrightnessIdx = BRIGHTNESS_LEVELS.indexOf(preferredBrightness)
-  const brightnessMatch = Math.abs(brightnessIdx - preferredBrightnessIdx) <= 1
-  const brightnessNote = brightnessMatch ? 'совпадает с вашим выбором' : 'отличается от вашего выбора'
-
-  return [
-    { label: `Температура: ${atrium.temperature.toFixed(1)}°C`, match: tempMatch, note: tempNote },
-    { label: `Шум: ${atrium.noise_status ?? '—'}`, match: noiseMatch, note: noiseNote },
-    { label: `Освещение: ${atrium.brightness_status ?? '—'}`, match: brightnessMatch, note: brightnessNote },
-  ]
-}
-
 function demoTemperatureStatus(temp: number): string {
   if (temp < 16) return 'Холодно'
   if (temp <= 23) return 'Комфортно'
@@ -218,6 +181,7 @@ export function Home() {
       .then(() => {
         showToast('Предпочтения сохранены — comfort score теперь ваш личный.')
         load()
+        setShowScoreDetails(false)
       })
       .catch(() => showToast('Не удалось сохранить предпочтения.', 'error'))
       .finally(() => setSavingPreference(false))
@@ -398,21 +362,13 @@ export function Home() {
                       {savingPreference ? 'Сохраняем…' : 'Сохранить предпочтения'}
                     </button>
                   </div>
-
-                  <div className="preference-result">
-                    <p>Сейчас в атриуме:</p>
-                    <ul>
-                      {comparePreferences(atrium, preferredTemp, preferredNoise, preferredBrightness).map(
-                        (check) => (
-                          <li key={check.label} className={check.match ? 'match' : 'mismatch'}>
-                            {check.match ? '✅' : '⚠️'} {check.label} — {check.note}
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  </div>
                 </div>
               )}
+
+              <p className="comfort-score-hint">
+                Comfort score варьируется от ваших предпочтений — нажмите ➕, чтобы настроить его под
+                себя.
+              </p>
             </div>
           )}
 

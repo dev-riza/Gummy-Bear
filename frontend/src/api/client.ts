@@ -25,6 +25,10 @@ export class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
+    // This app's data changes underneath the same URL (e.g. /api/current
+    // after saving a preference), so every request must hit the network
+    // fresh rather than risk the browser serving a cached GET response.
+    cache: 'no-store',
     ...init,
   })
   if (!res.ok) {

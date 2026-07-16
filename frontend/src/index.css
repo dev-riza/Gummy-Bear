@@ -482,31 +482,12 @@ main.page {
   width: 100%;
 }
 
-.preference-result p {
-  margin: 0 0 0.4rem;
-  font-weight: 700;
-}
-
-.preference-result ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.preference-result li {
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.preference-result li.match {
-  color: var(--good);
-}
-
-.preference-result li.mismatch {
-  color: var(--warn);
+.comfort-score-hint {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted-ink);
+  text-align: center;
+  max-width: 380px;
 }
 
 @media (max-width: 400px) {
