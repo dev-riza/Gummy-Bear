@@ -11,7 +11,7 @@
   height: 390px;
   perspective: 900px;
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-y;
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
 }
